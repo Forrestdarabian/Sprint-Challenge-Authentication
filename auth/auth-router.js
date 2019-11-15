@@ -3,6 +3,17 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Users = require("./auth-model.js");
 
+function generateToken(user) {
+  const payload = {
+    username: user.name,
+    id: user.id
+  };
+  const options = {
+    expiresIn: "1d"
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET || "PRIVATE", options);
+}
+
 router.post("/register", (req, res) => {
   const { username, password } = req.body;
   Users.insert({ username, password: bcrypt.hashSync(password, 8) })
